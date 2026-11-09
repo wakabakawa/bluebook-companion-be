@@ -1,0 +1,4 @@
+node_modules/
+dist/
+benchmarks/results.json
+*.log
