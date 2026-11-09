@@ -10,7 +10,13 @@
     "build": "tsc -p tsconfig.json",
     "test": "vitest run",
     "demo": "tsx demo/run_demo.ts",
-    "bench": "tsx benchmarks/benchPlanner.ts"
+    "bench": "tsx benchmarks/benchPlanner.ts",
+    "dev": "tsx watch api/server.ts",
+    "start": "node dist/api/server.js"
+  },
+  "dependencies": {
+    "ajv": "^8.17.1",
+    "fastify": "^5.2.0"
   },
   "devDependencies": {
     "@types/node": "^22.10.2",
