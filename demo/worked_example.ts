@@ -1,7 +1,6 @@
 import { Params, TopicStat } from "../engine/review-planner/types.js";
 
-// PDF §1.5: six topics from the 40-item sample set, all practiced one day ago,
-// no cohort figure released, Average reference time (60s) used throughout.
+// PDF §1.5: all practiced one day ago, no cohort figure released, 60s reference time throughout.
 export const WORKED_EXAMPLE_TOPICS: TopicStat[] = [
   { id: "Stoichiometry", N: 4, a: 4, c: 0, daysSincePractice: 1, cohortMastery: null, refSeconds: 60 },
   { id: "AcidsAndBases", N: 3, a: 3, c: 0, daysSincePractice: 1, cohortMastery: null, refSeconds: 60 },

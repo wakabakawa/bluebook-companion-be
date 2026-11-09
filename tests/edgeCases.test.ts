@@ -35,8 +35,7 @@ describe("edge cases", () => {
   });
 
   it("infeasible q relaxes to q' and reports it", () => {
-    // Only one topic, and it can never be "strong" (mastery far below threshold),
-    // so q=1 is infeasible and must relax to q'=0.
+    // Can never be "strong" (mastery far below threshold), so q=1 must relax to q'=0.
     const weakOnly = topic({ id: "weak", a: 10, c: 0 });
     const cert = planReview([weakOnly], paramsWith({ budgetMin: 60, minStrong: 1 }));
     expect(cert.status).toBe("OPTIMAL_RELAXED_Q");

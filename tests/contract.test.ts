@@ -227,9 +227,7 @@ describe("POST /api/v1/algorithm/solve", () => {
   });
 
   it("case 11: content-type with no registered parser -> 400 (collapsed to the same malformed-json problem)", async () => {
-    // Fastify ships default parsers for application/json AND text/plain (the latter just
-    // passes the raw string through, which then fails schema validation as 422 — not this
-    // case). A content-type with no parser at all is what actually triggers FST_ERR_CTP_*.
+    // text/plain has a default parser too (passes through, fails as 422 instead) — use a type with none.
     const res = await app.inject({
       method: "POST",
       url: "/api/v1/algorithm/solve",

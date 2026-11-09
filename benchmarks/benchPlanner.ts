@@ -56,7 +56,6 @@ function linregress(xs: number[], ys: number[]): { slope: number; intercept: num
 const RUNS = 7;
 const records: Record_[] = [];
 
-// --- Grid A: cost-per-cell growth (Fig. 1 data) ---
 const cellGrid: Array<{ n: number; B: number; q: number }> = [];
 const ns = [50, 100, 150, 200, 300, 400, 500, 600, 700, 750];
 const bs = [60, 120, 240, 360, 480, 600];
@@ -86,7 +85,6 @@ const { slope, r2 } = linregress(
 );
 console.log(`Linear fit: ${(slope * 1_000_000).toFixed(2)} ms per million cells, R^2 = ${r2.toFixed(4)}`);
 
-// --- Grid B: DP vs exhaustive search growth (Fig. 2 data) ---
 const exhaustiveGrid = [8, 10, 12, 14, 16, 18, 20];
 const B2 = 60;
 const q2 = 1;
@@ -124,7 +122,6 @@ console.table(
   }))
 );
 
-// --- Greedy gap vs DP objective (§6.3 claim) ---
 const gapParams = { ...DEFAULT_PARAMS, budgetMin: 90, minStrong: 0 };
 const gaps: number[] = [];
 const GAP_INSTANCES = 200;

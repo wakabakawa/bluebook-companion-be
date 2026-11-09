@@ -13,9 +13,7 @@ import {
 } from "./problem.js";
 import { solveRoute } from "./routes/solve.js";
 
-// ajv/dist/2020.js's default-export typing doesn't resolve cleanly under NodeNext;
-// require it directly (true at runtime: this CJS module IS the constructor) and
-// type it by hand against the package's own Options type.
+// ajv/dist/2020.js's default export doesn't type-check under NodeNext; require + hand-type it instead.
 const require = createRequire(import.meta.url);
 const Ajv2020: { new (opts?: Options): import("ajv/dist/2020.js").default } = require("ajv/dist/2020.js");
 

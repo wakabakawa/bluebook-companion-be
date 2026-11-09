@@ -36,8 +36,7 @@ export const solveRequestSchema = {
         additionalProperties: false,
         required: ["topic_id", "items_in_book", "answered", "correct", "days_since_practice", "cohort_mastery", "ref_time_sec"],
         properties: {
-          // Opaque correlation key: no pattern, since real ids are composite
-          // strings with spaces/punctuation (e.g. "Reading Comprehension|Passages|X").
+          // no pattern: real ids are composite strings with spaces/punctuation
           topic_id: { type: "string", minLength: 1, maxLength: 128 },
           items_in_book: { type: "integer", minimum: 0, maximum: 10000 },
           answered: { type: "integer", minimum: 0, maximum: 100000 },

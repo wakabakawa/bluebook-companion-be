@@ -83,8 +83,7 @@ describe("DP vs greedy (unconstrained, q=0)", () => {
   }
 
   it("has at least one strict counterexample where greedy is suboptimal", () => {
-    // Mirrors the PDF §1.6 worked example: a cheap high-density item crowds out a
-    // slightly-less-dense item that unlocks much more value overall.
+    // Mirrors the PDF §1.6 worked example: high density crowds out higher total value.
     const rng = mulberry32(42);
     const topics = randomTopics(rng, 30);
     const params = paramsWith({ budgetMin: 50, minStrong: 0 });
