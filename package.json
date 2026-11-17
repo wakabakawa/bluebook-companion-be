@@ -12,7 +12,9 @@
     "demo": "tsx demo/run_demo.ts",
     "bench": "tsx benchmarks/benchPlanner.ts",
     "dev": "tsx watch api/server.ts",
-    "start": "node dist/api/server.js"
+    "start": "node dist/api/server.js",
+    "seed:catalog": "tsx seed/catalog.ts",
+    "seed:answer-key": "tsx seed/answer_key.ts"
   },
   "dependencies": {
     "ajv": "^8.17.1",
@@ -20,6 +22,8 @@
   },
   "devDependencies": {
     "@types/node": "^22.10.2",
+    "@types/pg": "^8.23.1",
+    "pg": "^8.23.1",
     "supabase": "^3.2.0",
     "tsx": "^4.19.2",
     "typescript": "^5.7.2",
