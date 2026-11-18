@@ -11,7 +11,7 @@ each one deliberate and already reasoned through elsewhere in this project, not 
       reached over HTTP, with "no database credentials" implying a separate process. Real system:
       `supabase/functions/plan-gateway/handler.ts` imports the engine directly —
       `import { planReview } from "../_shared/engine/service.js"` — compiled JS vendored
-      in-process by `scripts/sync-engine.sh`. No FastAPI, no second HTTP hop, no separate engine
+      in-process by `scripts/sync-engine.ts`. No FastAPI, no second HTTP hop, no separate engine
       service anywhere in this repo. Deliberate: merging the "architecture quantum" (Richards &
       Ford) is a fine trade at a PBL cohort's real traffic level; the *module* boundary
       (`planReview` as a pure, injected function with zero DB/network calls) is what was actually

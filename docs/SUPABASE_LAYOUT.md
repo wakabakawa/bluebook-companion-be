@@ -37,7 +37,7 @@ append-only history — never edit an applied one, add a new file instead.
 
 Supabase's documented pattern for code shared between functions.
 
-- **`engine/`** — the *compiled* output of `engine/review-planner/` (real `.js`, built by `npm run build`, copied by `scripts/sync-engine.sh`). Untouched algorithm, same 202 tests, now running in Deno instead of Node.
+- **`engine/`** — the *compiled* output of `engine/review-planner/` (real `.js`, built by `npm run build`, copied by `scripts/sync-engine.ts`). Untouched algorithm, same 202 tests, now running in Deno instead of Node.
 - **`gateway/`** — hand-written `.ts`: `wire-types.ts` (JSON shapes), `mappers.ts` (DB rows ↔ engine types ↔ response JSON), `validate.ts` (hand-rolled request checking — Ajv skipped since its codegen approach is unverified under this runtime), `problem.ts` (RFC 9457 error bodies), `engine-meta.ts` (version string, the 1500ms timeout constant).
 - **`README.md`** — note that this directory is generated/vendored, don't hand-edit the `engine/` part.
 

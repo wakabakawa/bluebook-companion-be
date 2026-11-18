@@ -15,8 +15,8 @@
     "start": "node dist/api/server.js",
     "seed:catalog": "tsx seed/catalog.ts",
     "seed:answer-key": "tsx seed/answer_key.ts",
-    "sync-engine": "bash scripts/sync-engine.sh",
-    "sync-engine:check": "bash scripts/sync-engine.sh --check"
+    "sync-engine": "tsx scripts/sync-engine.ts",
+    "sync-engine:check": "tsx scripts/sync-engine.ts --check"
   },
   "dependencies": {
     "ajv": "^8.17.1",
