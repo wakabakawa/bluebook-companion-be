@@ -52,8 +52,17 @@ npm run sync-engine
 npx supabase functions deploy plan-gateway --use-api
 ```
 
-Seed the remote database — copy `.env.sample` to `.env` and set `DB_URL` to the remote connection
-string (Dashboard → Project Settings → Database → Connection string), then:
+Seed the remote database — copy `.env.sample` to `.env` and set `DB_URL` from Dashboard → Project
+Settings → Database → Connect. That page offers three connection strings; for a one-off script
+run from your own machine:
+- Try **Direct connection** first (plain `postgres` user, full Postgres compatibility).
+- If it times out — its host is IPv6-only, which most home/corporate networks can't reach — use
+  **Session pooler** instead (IPv4-compatible, same session-mode behavior as Direct, username
+  becomes `postgres.<project-ref>` since that host is shared across projects).
+- Skip **Transaction pooler**: it's built for many brief, concurrent, stateless connections
+  (serverless/Edge Functions), not a single manual script run.
+
+Then:
 
 ```
 npm run seed:catalog
