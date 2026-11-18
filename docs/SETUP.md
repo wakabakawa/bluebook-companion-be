@@ -52,11 +52,10 @@ npm run sync-engine
 npx supabase functions deploy plan-gateway --use-api
 ```
 
-Seed the remote database — point `DB_URL` at the remote connection string (Dashboard → Project
-Settings → Database → Connection string) instead of the local default:
+Seed the remote database — copy `.env.sample` to `.env` and set `DB_URL` to the remote connection
+string (Dashboard → Project Settings → Database → Connection string), then:
 
 ```
-export DB_URL="postgresql://postgres.<project-ref>:<password>@<pooler-host>:6543/postgres"
 npm run seed:catalog
 npm run seed:answer-key
 ```
