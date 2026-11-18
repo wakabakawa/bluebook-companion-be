@@ -6,19 +6,9 @@ real Supabase project. For what each file in `supabase/` does, see `SUPABASE_LAY
 ## 1. Prerequisites
 
 - **Node.js 22+** (`package.json`'s `engines` requires it).
-- **A container runtime**, for the local Supabase stack only (not needed if you only deploy to a
-  remote project): Docker Desktop/Engine, or Podman on Linux.
+- **Docker**, installed and running — only needed for the local Supabase stack, not for deploying
+  straight to a remote project.
 - **A Supabase account** (free tier), only needed for remote/production setup.
-- **If your host is an immutable/atomic Linux distro** (Fedora Silverblue, Bazzite, etc.) and
-  therefore can't install Podman/Docker directly:
-  ```
-  distrobox create --name bluebook-engine --image registry.fedoraproject.org/fedora:43
-  distrobox enter bluebook-engine
-  sudo dnf install -y nodejs podman    # inside the container
-  systemctl --user enable --now podman.socket
-  ```
-  Run everything below inside that container. It shares the host's network namespace, so
-  `127.0.0.1:<port>` reaches the local Supabase stack with no port-forwarding needed.
 
 ## 2. Install
 
@@ -32,11 +22,6 @@ npx supabase --version
 ## 3. Local Supabase setup
 
 ```
-export CONTAINER_HOST=unix:///run/user/$(id -u)/podman/podman.sock   # podman only, not Docker Desktop
-export DOCKER_HOST=$CONTAINER_HOST
-
-sudo chcon -Rt container_file_t supabase/functions/   # SELinux hosts only, once per checkout
-
 npx supabase start
 npm run sync-engine          # vendors engine/review-planner's compiled output into
                               # supabase/functions/_shared/engine/
@@ -44,12 +29,9 @@ npm run seed:catalog
 npm run seed:answer-key
 ```
 
-Without the `chcon` step on an SELinux-enforcing host, the edge runtime container fails with a
-generic `BOOT_ERROR`/"failed to determine entrypoint" — check `podman logs
-supabase_edge_runtime_<project>` and `podman exec <container> ls <mounted path>` ("Permission
-denied") to confirm before assuming it's a code bug.
-
-`npx supabase stop`/`status` need the same two env vars exported.
+On an SELinux-enforcing host, if the edge runtime container fails with a generic
+`BOOT_ERROR`/"failed to determine entrypoint", run `sudo chcon -Rt container_file_t
+supabase/functions/` once per checkout and retry.
 
 ## 4. Remote (production) Supabase setup
 
