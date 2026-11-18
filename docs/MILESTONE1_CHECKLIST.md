@@ -47,6 +47,13 @@ not affect correctness, only the tightness of the empirical growth-rate fit; tre
 asymptotic bound (`O(n·q·B)`, proven in the PDF's Task 3) as the authoritative claim and the
 benchmark as a sanity check, not a replacement for it.
 
+The PDF's own DEV-ALGO-101 ticket (§5.2) specifies the engine module as Python
+(`priorities.py`/`knapsack.py`/`service.py`, `pip install -r requirements.txt && pytest`). This
+checklist's own "How to reproduce" above already says `npm test` — the engine has been
+TypeScript/vitest since this milestone's first commit, and the PDF's Python module paths were
+never followed. Not a regression introduced later; stating it here since it was never written
+down until this check.
+
 ## Out of scope for this milestone
 
 No FastAPI/`plan-gateway` equivalent, no Supabase schema/RLS, no Android wiring — per the PDF's
