@@ -10,7 +10,7 @@
 
 ## `migrations/` — Postgres + Row Level Security
 
-Ten timestamped SQL files, applied in order by `supabase db push`/`supabase start`. Each is
+Eleven timestamped SQL files, applied in order by `supabase db push`/`supabase start`. Each is
 append-only history — never edit an applied one, add a new file instead. The last two below
 supersede parts of `views.sql`/`functions.sql` (`drop ... create ...`), so those originals no
 longer fully describe the live schema — check the newest migration touching a given object first.
@@ -27,6 +27,7 @@ longer fully describe the live schema — check the newest migration touching a 
 | `ensure_profile.sql` | Found while testing: a brand-new user with no submitted attempts had no `local_profile` row, so they got an empty plan instead of a cold-start one. This RPC fixes that. |
 | `fix_catalog_view_and_tighten_grants.sql` | Fixes a real bug: `v_sheet_catalog` (security_invoker) joined `app_private.answer_key_version` to derive `key_version_id`, which meant every real student request failed with "permission denied" — `authenticated` has zero grants on `app_private` by design. Drops that column from the view; `submit_attempt()` is dropped and recreated with `key_version_id` added to its own return instead (the correct place for it, since it's already the function that resolves the published version). Also closes a real gap: `refresh_rollups()` had no `revoke`/`grant` at all, so Postgres's default (`EXECUTE` to `PUBLIC`) left it callable by anyone, including `anon`, via `rpc/refresh_rollups` — restricted to `service_role`. |
 | `add_ref_seconds_to_sheet_items.sql` | Drops and recreates `v_sheet_items` adding `ref_seconds` (`coalesce(item.ref_seconds_override, difficulty.ref_seconds, 60)`, same precedence `refresh_rollups()` already uses) — FR17/CC03, lets the Android app compare each item's answer time against its own reference instead of one flat constant. Only joins `item`/`classification_value`, never `app_private`, so it can't reintroduce the bug above. |
+| `remove_answer_key_reveal.sql` | Resolves the FR11-vs-SEC-11 tension in favor of SEC-11. Drops and recreates `submit_attempt()` removing `correct_choice` from its return shape entirely — the key is still read internally to compute `is_correct`, but the output path never touches `app_private` or reveals the answer. Also drops the now-pointless `planner_config.reveal_key_after_submit` column. |
 
 ## `functions/plan-gateway/` — Edge Functions
 
