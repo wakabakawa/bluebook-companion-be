@@ -1,5 +1,5 @@
 -- Three read-only views. ALL must be security_invoker = true, or they run with the
--- view owner's privileges and silently bypass every RLS policy above — the single
+-- view owner's privileges and silently bypass every RLS policy above - the single
 -- easiest way this schema could accidentally leak the answer key.
 
 -- v_topic_stats: the plan-gateway Edge Function's input. One row per topic of the
@@ -60,7 +60,7 @@ join public.classification_value br  on br.id = es.branch_value_id
 left join app_private.answer_key_version akv
   on akv.exam_set_id = es.id and akv.status = 'published';
 
--- v_sheet_items: classification tags only — no key, no question text (BR01). Item's
+-- v_sheet_items: classification tags only - no key, no question text (BR01). Item's
 -- own RLS (published sets only) already applies because this view is security_invoker.
 create or replace view public.v_sheet_items
 with (security_invoker = true) as

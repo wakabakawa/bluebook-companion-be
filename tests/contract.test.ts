@@ -227,7 +227,7 @@ describe("POST /api/v1/algorithm/solve", () => {
   });
 
   it("case 11: content-type with no registered parser -> 400 (collapsed to the same malformed-json problem)", async () => {
-    // text/plain has a default parser too (passes through, fails as 422 instead) — use a type with none.
+    // text/plain has a default parser too (passes through, fails as 422 instead) - use a type with none.
     const res = await app.inject({
       method: "POST",
       url: "/api/v1/algorithm/solve",

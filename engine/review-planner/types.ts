@@ -40,7 +40,7 @@ export interface ScoredTopic {
   r: number;
   reliable: boolean;
   strong: boolean;
-  /** reliable && strong — the flag the DP's C2 constraint counts against q */
+  /** reliable && strong - the flag the DP's C2 constraint counts against q */
   s: boolean;
   k: number;
   v: number;

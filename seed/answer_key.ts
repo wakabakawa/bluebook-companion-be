@@ -1,6 +1,6 @@
 import { connect } from "./db.js";
 
-// The only place this repo writes an answer key. Local/dev seeding only — mirrors
+// The only place this repo writes an answer key. Local/dev seeding only - mirrors
 // SampleData.kt's hardcoded Geometry key, which is exactly what this migration retires
 // from the Android client once Postgres is the source of truth (see the plan's §4).
 
@@ -19,7 +19,7 @@ async function main() {
        where es.set_name = 'Set A' and br.code = 'Geometry'`
     );
     const examSetId = setRes.rows[0]?.id;
-    if (!examSetId) throw new Error("Set A / Geometry not found — run seed/catalog.ts first");
+    if (!examSetId) throw new Error("Set A / Geometry not found - run seed/catalog.ts first");
 
     const versionRes = await db.query<{ id: string }>(
       `insert into app_private.answer_key_version (exam_set_id, version_no, status, published_at)

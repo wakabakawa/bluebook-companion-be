@@ -1,6 +1,6 @@
 -- Two fixes found testing against the deployed project:
 --
--- 1. v_sheet_catalog is security_invoker, so it runs with the CALLER's privileges —
+-- 1. v_sheet_catalog is security_invoker, so it runs with the CALLER's privileges -
 --    but it left-joined app_private.answer_key_version to derive key_version_id.
 --    authenticated has zero grants on app_private (by design), so Postgres rejects the
 --    whole query with "permission denied for table answer_key_version" the moment a
@@ -10,11 +10,11 @@
 --    should hand key_version_id back to the client, not the catalogue.
 --
 -- 2. refresh_rollups(int) was the one SECURITY DEFINER function in this schema missing
---    the revoke/grant pair every other one has — Postgres grants EXECUTE on new
+--    the revoke/grant pair every other one has - Postgres grants EXECUTE on new
 --    functions to PUBLIC by default, so it was reachable by anon and authenticated via
 --    PostgREST's rpc/refresh_rollups endpoint. Its only real callers are the seed
 --    scripts and a future pg_cron job, both of which connect as a role that owns (or
---    is) postgres and so is unaffected by REVOKE — there's no end-user path to this
+--    is) postgres and so is unaffected by REVOKE - there's no end-user path to this
 --    function, admin or otherwise, so it's restricted to service_role rather than
 --    gated by is_admin(): a service_role call often has no auth.uid()/app_metadata
 --    claims at all, and is_admin()'s coalesce(..., false) would reject it. Restricting

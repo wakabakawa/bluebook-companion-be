@@ -1,7 +1,7 @@
 import { ScoredTopic } from "./types.js";
 import { DpResult } from "./knapsack.js";
 
-/** Unpruned exhaustive search over all 2^n subsets. Test oracle only — do not use past n~20. */
+/** Unpruned exhaustive search over all 2^n subsets. Test oracle only - do not use past n~20. */
 export function bruteForce(items: ScoredTopic[], budgetMin: number, minStrong: number): DpResult {
   const n = items.length;
   const B = budgetMin;
@@ -49,7 +49,7 @@ export function bruteForce(items: ScoredTopic[], budgetMin: number, minStrong: n
 
 /**
  * Greedy by value/cost density (v/k), Θ(n log n). Ignores the minStrong (q) constraint
- * entirely — kept only as the PDF's literature-baseline counterexample to optimal DP.
+ * entirely - kept only as the PDF's literature-baseline counterexample to optimal DP.
  */
 export function greedyRatio(items: ScoredTopic[], budgetMin: number): DpResult {
   const n = items.length;

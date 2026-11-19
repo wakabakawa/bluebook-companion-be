@@ -1,4 +1,4 @@
--- Privileged RPCs. Each is a single, reviewable entry point with one capability —
+-- Privileged RPCs. Each is a single, reviewable entry point with one capability -
 -- the policy-review surface is these functions, not a whole schema.
 
 -- Recomputes the published catalogue/cohort projections (topic_catalog, topic_cohort)
@@ -164,7 +164,7 @@ revoke all    on function public.submit_attempt(uuid, uuid, timestamptz, int, js
 grant execute on function public.submit_attempt(uuid, uuid, timestamptz, int, jsonb) to authenticated;
 
 -- Admin key publishing. Answer keys are never reachable via direct table access (see
--- the confidential_answer_keys migration) — this definer RPC, gated on is_admin(), is
+-- the confidential_answer_keys migration) - this definer RPC, gated on is_admin(), is
 -- the only path. Supersedes any previously-published version for the same exam set.
 create or replace function public.admin_publish_answer_key(p_version_id uuid)
 returns void

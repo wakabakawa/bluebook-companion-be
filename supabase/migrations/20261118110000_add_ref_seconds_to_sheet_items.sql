@@ -1,7 +1,7 @@
 -- FR17/CC03: expose a real per-item reference time through v_sheet_items so the client can do
 -- per-item speed comparisons instead of one flat AppConfig constant (the charter specifies
 -- "measured against the reference time configured per subject"). Only joins public.item and
--- public.classification_value, both already granted to authenticated with permissive RLS — no
+-- public.classification_value, both already granted to authenticated with permissive RLS - no
 -- app_private, so this cannot reintroduce the v_sheet_catalog security_invoker permission bug
 -- fixed in 20261118090000.
 
@@ -21,7 +21,7 @@ select
   d.label       as difficulty,
   i.book_page,
   -- Same precedence refresh_rollups() already uses for the topic-level rollup (per-item
-  -- override, else its difficulty's default, else a 60s hard fallback) — no new business
+  -- override, else its difficulty's default, else a 60s hard fallback) - no new business
   -- rule invented here.
   coalesce(i.ref_seconds_override, d.ref_seconds, 60) as ref_seconds
 from public.item i

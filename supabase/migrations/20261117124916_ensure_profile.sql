@@ -1,5 +1,5 @@
 -- Found while testing v_topic_stats directly: local_profile has no INSERT policy (by
--- design — see the attempts migration), so a brand-new user who hasn't submitted an
+-- design - see the attempts migration), so a brand-new user who hasn't submitted an
 -- attempt yet has no local_profile row and v_topic_stats returns zero rows instead of
 -- the intended cold-start (all topics of the edition, zero practice). submit_attempt()
 -- already upserts the row as a side effect, but the plan-gateway Edge Function needs to

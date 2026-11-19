@@ -1,10 +1,10 @@
 // Vendors the engine's compiled output into supabase/functions/_shared/engine/ so the
 // Edge Function can import real .js files (Deno won't resolve the source's NodeNext
 // .js-pointing-at-.ts specifiers). Only the four files service.ts actually needs are
-// vendored — reference.ts/baselines.ts/index.ts are test-only and would drag brute-force
+// vendored - reference.ts/baselines.ts/index.ts are test-only and would drag brute-force
 // baselines into the deployed bundle for no reason.
 //
-// Cross-platform (Windows, macOS, Linux) — replaces the old bash-only version.
+// Cross-platform (Windows, macOS, Linux) - replaces the old bash-only version.
 // --check: exit 1 if the vendored copies differ from a fresh build (drift detection, CI).
 
 import { execSync } from "node:child_process";

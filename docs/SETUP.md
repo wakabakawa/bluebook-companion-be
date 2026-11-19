@@ -6,7 +6,7 @@ real Supabase project. For what each file in `supabase/` does, see `SUPABASE_LAY
 ## 1. Prerequisites
 
 - **Node.js 22+** (`package.json`'s `engines` requires it).
-- **Docker**, installed and running — only needed for the local Supabase stack, not for deploying
+- **Docker**, installed and running - only needed for the local Supabase stack, not for deploying
   straight to a remote project.
 - **A Supabase account** (free tier), only needed for remote/production setup.
 
@@ -15,7 +15,7 @@ real Supabase project. For what each file in `supabase/` does, see `SUPABASE_LAY
 ```
 git clone <this repo>
 cd bluebook-companion-be
-npm install          # pulls in the Supabase CLI (npx supabase), vitest, tsx — no global installs
+npm install          # pulls in the Supabase CLI (npx supabase), vitest, tsx - no global installs
 npx supabase --version
 ```
 
@@ -52,11 +52,11 @@ npm run sync-engine
 npx supabase functions deploy plan-gateway --use-api
 ```
 
-Seed the remote database — copy `.env.sample` to `.env` and set `DB_URL` from Dashboard → Project
+Seed the remote database - copy `.env.sample` to `.env` and set `DB_URL` from Dashboard → Project
 Settings → Database → Connect. That page offers three connection strings; for a one-off script
 run from your own machine:
 - Try **Direct connection** first (plain `postgres` user, full Postgres compatibility).
-- If it times out — its host is IPv6-only, which most home/corporate networks can't reach — use
+- If it times out - its host is IPv6-only, which most home/corporate networks can't reach - use
   **Session pooler** instead (IPv4-compatible, same session-mode behavior as Direct, username
   becomes `postgres.<project-ref>` since that host is shared across projects).
 - Skip **Transaction pooler**: it's built for many brief, concurrent, stateless connections
@@ -69,11 +69,15 @@ npm run seed:catalog
 npm run seed:answer-key
 ```
 
-Get the publishable (anon) key the Android app needs — Dashboard → Project Settings → API, or:
+Get the publishable key the Android app needs - Dashboard → Project Settings → API, or:
 
 ```
-npx supabase projects api-keys --project-ref <project-ref>
+npx supabase projects api-keys --project-ref <project-ref> --output json \
+  | grep -o '"sb_publishable_[A-Za-z0-9_-]*"' | head -1 | tr -d '"'
 ```
+
+This command also returns a legacy JWT-format `anon` key (`eyJ...`) - ignore it, Supabase no
+longer accepts that format. Use only the `sb_publishable_...` key.
 
 ## 5. Verify end to end
 
@@ -95,8 +99,8 @@ curl -s "https://<project-ref>.supabase.co/rest/v1/v_sheet_catalog?limit=3" \
 
 ## 6. Next
 
-- `SUPABASE_LAYOUT.md` — what every file in `supabase/` does.
-- `MILESTONE1_CHECKLIST.md` / `MILESTONE2_CHECKLIST.md` / `MILESTONE3_CHECKLIST.md` — how each
+- `SUPABASE_LAYOUT.md` - what every file in `supabase/` does.
+- `MILESTONE1_CHECKLIST.md` / `MILESTONE2_CHECKLIST.md` / `MILESTONE3_CHECKLIST.md` - how each
   claim about this backend was actually verified.
-- `bluebook-companion-fe/README.md` — pointing the Android app at whichever project you set up
+- `bluebook-companion-fe/README.md` - pointing the Android app at whichever project you set up
   here (`SUPABASE_URL`/`SUPABASE_ANON_KEY` in its `.env` or `local.properties`).

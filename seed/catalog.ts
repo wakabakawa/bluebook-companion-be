@@ -29,7 +29,7 @@ async function main() {
     await db.query(
       `insert into public.edition (id, title, is_active) values ($1, $2, true)
        on conflict (id) do nothing`,
-      [EDITION_ID, "The Maroon Bluebook — sample edition"]
+      [EDITION_ID, "The Maroon Bluebook - sample edition"]
     );
 
     const classifications: Array<[number, string, string]> = [

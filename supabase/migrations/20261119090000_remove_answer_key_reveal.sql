@@ -4,7 +4,7 @@
 -- client, full stop, not even post-submission for the student's own answered items.
 --
 -- submit_attempt()'s final return query previously joined app_private.answer_key_item purely
--- to conditionally reveal correct_choice. Dropping that column means dropping that join too —
+-- to conditionally reveal correct_choice. Dropping that column means dropping that join too -
 -- the only place left in this function that touches the answer key is the internal scoring
 -- INSERT a few lines earlier (which has to, to compute is_correct). The output path never
 -- touches app_private at all now.
@@ -81,5 +81,5 @@ $$;
 revoke all    on function public.submit_attempt(uuid, uuid, timestamptz, int, jsonb) from public, anon;
 grant execute on function public.submit_attempt(uuid, uuid, timestamptz, int, jsonb) to authenticated;
 
--- Nothing reads this anymore — there's no longer a reveal decision to gate.
+-- Nothing reads this anymore - there's no longer a reveal decision to gate.
 alter table public.planner_config drop column reveal_key_after_submit;

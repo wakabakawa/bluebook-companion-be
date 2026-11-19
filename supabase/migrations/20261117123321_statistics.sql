@@ -1,6 +1,6 @@
 -- Cohort statistics: raw tables (admin-only) feeding published projection tables
 -- (safe for every authenticated reader by construction). BR08/BR09 gating lives in
--- which rows get published, not in a CASE a client could bypass — a missing row
+-- which rows get published, not in a CASE a client could bypass - a missing row
 -- just means "not released yet", which fails closed.
 
 create table public.item_statistics (

@@ -76,7 +76,7 @@ export function createHandler(deps: HandlerDeps) {
     } catch (err) {
       if (err instanceof InputError) {
         // Reaching here means v_topic_stats returned data the engine rejects (e.g. a
-        // duplicate topic_id, which is impossible by the view's own primary key) —
+        // duplicate topic_id, which is impossible by the view's own primary key) -
         // that's a server-side data fault, not a client input problem.
         console.error("engine rejected server-provided data:", err.message);
         return problemResponse(SERVER_DATA_ERROR, err.message, instance);

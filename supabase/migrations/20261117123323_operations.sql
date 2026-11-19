@@ -1,7 +1,7 @@
--- Operations: planner defaults, an empty job queue (no producer yet — BR07 re-scoring
+-- Operations: planner defaults, an empty job queue (no producer yet - BR07 re-scoring
 -- is a later milestone, but the shape is locked in now so it's not a later migration),
 -- and an append-only audit trail wired to exactly the two privileged write paths that
--- already exist. Deliberately NOT wired to student reads/submissions — a per-profile
+-- already exist. Deliberately NOT wired to student reads/submissions - a per-profile
 -- activity log is exactly the personal-data artefact BR01/NFR01 exist to prevent.
 
 create table public.planner_config (

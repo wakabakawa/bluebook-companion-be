@@ -1,5 +1,5 @@
 -- Attempts: profile, attempt headers, per-item responses.
--- profile_id IS auth.uid() — no separate mapping table, no device-derived identifier (BR04/NFR01).
+-- profile_id IS auth.uid() - no separate mapping table, no device-derived identifier (BR04/NFR01).
 
 create table public.local_profile (
   id           uuid primary key references auth.users(id) on delete cascade,
