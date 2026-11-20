@@ -15,6 +15,7 @@
     "start": "node dist/api/server.js",
     "seed:catalog": "tsx seed/catalog.ts",
     "seed:answer-key": "tsx seed/answer_key.ts",
+    "seed:cohort": "tsx seed/cohort.ts",
     "sync-engine": "tsx scripts/sync-engine.ts",
     "sync-engine:check": "tsx scripts/sync-engine.ts --check"
   },
