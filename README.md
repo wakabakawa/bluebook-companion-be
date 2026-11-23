@@ -18,8 +18,9 @@ standalone Fastify server in `api/` is kept, not retired: both exist side by sid
 - `supabase/` - the Postgres schema/RLS (`migrations/`) and the `plan-gateway` Edge Function
   (`functions/plan-gateway/`, `functions/_shared/` for the vendored engine + portable gateway
   code). See "Local Supabase setup" below.
-- `seed/` - populates the Postgres content tables (editions, classification, items, exam sets,
-  the sample Geometry answer key) from the same layout the Android app's `SampleData.kt` hardcodes.
+- `seed/` - populates the live Postgres content tables directly (editions, classification,
+  exam sets, items, published answer keys) and a fake cohort of readers for testing Cohort
+  Comparison. See `docs/SUPABASE_LAYOUT.md` for what each script does.
 - `tests/` - optimality tests (DP vs. exhaustive/reference/greedy), edge-case tests, and
   `contract.test.ts` (Fastify HTTP contract via `app.inject()`, no network binding).
 - `benchmarks/` - seeded synthetic data generator and a runtime/complexity benchmark script.
