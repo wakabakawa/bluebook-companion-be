@@ -1,13 +1,10 @@
 import { connect } from "./db.js";
 
-// Mirrors bluebook-companion-fe's SampleData.kt layout exactly, so the two stay comparable
-// while both exist. Only Set A / Geometry is "published" (FR05) with real item tags.
-//
-// Set A is capped at 10 items total (the Charter's requested Set A/B/C sizing). Set A /
-// Geometry already carries 10 published items with real attempt/cohort history attached
-// (no cascade delete on item_response/answer_key_item), so it's left untouched here and
-// Set A simply has no other branches. Set B (30) and Set C (40) had zero items/responses,
-// so they're free to cover the full subject/branch taxonomy, scaled to their totals.
+// Every branch/topic gets the same item count within a set (FR05's Set A/B/C sizing):
+// Set A = 10 items per topic, Set B = 30 per topic, Set C = 40 per topic, across all 7
+// branches. Set A/Geometry already carries 10 published items with real attempt/cohort
+// history attached (no cascade delete on item_response/answer_key_item) - its item_count
+// already matches Set A's target, so it's left untouched rather than regenerated.
 
 const GEOMETRY_KEY = "BDACBDAACD".split("");
 const GEOMETRY_TOPICS = ["Triangles", "Triangles", "Circles", "Polygons", "Circles", "Solids", "Polygons", "Triangles", "Solids", "Circles"];
@@ -19,9 +16,9 @@ const EDITION_ID = 1;
 
 type BranchContent = { subject: string; topics: string[]; concepts: string[]; bookPageBase: number };
 
-// Topic/key-concept pools for Set B and Set C's items. Sized to the largest item count any
-// set asks of that branch (Trigonometry needs 12 distinct concepts for Set C, etc.) so no
-// list has to repeat within one exam set.
+// Topic/key-concept pools per branch, cycled (mod length) to fill however many items a set
+// asks for - these are sample/placeholder tags, not real book content, so a short pool
+// repeating across 40 items is fine (same convention as the original Geometry key).
 const BRANCH_CONTENT: Record<string, BranchContent> = {
   Geometry: {
     subject: "Mathematics",
@@ -69,13 +66,7 @@ const BRANCH_CONTENT: Record<string, BranchContent> = {
 
 const DIFF_CYCLE = ["EASY", "EASY", "AVERAGE", "AVERAGE", "HARD", "AVERAGE"];
 
-// Set A / Geometry (10) is excluded - it already exists and is left untouched.
-const SET_LAYOUTS: Record<string, Record<string, number>> = {
-  "Set B": { Geometry: 3, Trigonometry: 9, Calculus: 6, Chemistry: 3, Biology: 3, Grammar: 3, Passages: 3 },
-  "Set C": { Geometry: 4, Trigonometry: 12, Calculus: 8, Chemistry: 4, Biology: 4, Grammar: 4, Passages: 4 },
-};
-
-const UNUSED_SET_A_BRANCHES = ["Biology", "Calculus", "Chemistry", "Grammar", "Passages", "Trigonometry"];
+const PER_SET_ITEM_COUNT: Record<string, number> = { "Set A": 10, "Set B": 30, "Set C": 40 };
 
 async function main() {
   const db = connect();
@@ -176,9 +167,11 @@ async function main() {
       );
     }
 
-    // Set B and Set C: full subject/branch taxonomy, scaled to each set's item-count budget.
-    for (const [setName, branches] of Object.entries(SET_LAYOUTS)) {
-      for (const [branchCode, itemCount] of Object.entries(branches)) {
+    // Every other (set, branch) combo: same item count per topic as the rest of its set.
+    for (const [setName, itemCount] of Object.entries(PER_SET_ITEM_COUNT)) {
+      for (const branchCode of Object.keys(BRANCH_CONTENT)) {
+        if (setName === "Set A" && branchCode === "Geometry") continue; // handled above, untouched
+
         const content = BRANCH_CONTENT[branchCode]!;
         const subjectValueId = subjectIds.get(content.subject)!;
         const branchValueId = branchIds.get(branchCode)!;
@@ -227,15 +220,6 @@ async function main() {
       }
     }
 
-    // Set A no longer carries the other 6 branches - drop the empty placeholder rows.
-    await db.query(
-      `delete from public.exam_set es
-       using public.classification_value bv
-       where es.branch_value_id = bv.id and es.set_name = 'Set A' and bv.code = any($1)
-         and not exists (select 1 from public.item i where i.exam_set_id = es.id)`,
-      [UNUSED_SET_A_BRANCHES]
-    );
-
     await db.query(
       `insert into public.planner_config (edition_id) values ($1) on conflict (edition_id) do nothing`,
       [EDITION_ID]
@@ -245,7 +229,7 @@ async function main() {
 
     await db.query("select public.refresh_rollups($1)", [EDITION_ID]);
 
-    console.log("Seeded catalog: 1 edition, Set A (10 items, Geometry only), Set B (30 items), Set C (40 items).");
+    console.log("Seeded catalog: 1 edition, 7 branches x 3 sets - Set A 10/topic, Set B 30/topic, Set C 40/topic.");
   } catch (err) {
     await db.query("rollback");
     throw err;
