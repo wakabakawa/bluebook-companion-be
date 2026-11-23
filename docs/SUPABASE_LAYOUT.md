@@ -43,6 +43,24 @@ then `seed:answer-key` must run in that order; `seed:cohort` requires both to ha
 | `answer_key.ts` | Publishes an `app_private.answer_key_version`/`answer_key_item` for every exam_set `catalog.ts` published. Set A/Geometry keeps its original, already-demoed key (`GEOMETRY_KEY`); every other branch gets a deterministic per-branch key (a hash of the branch code + position) - reproducible rather than invented fresh each run, since there's no real answer-key source for this sample content. |
 | `cohort.ts` | Seeds 300 fake readers' attempts on Set A/Geometry so FR22's Cohort Comparison clears BR09's release threshold (`planner_config.cohort_min_attempts`). Each fake reader is a real `auth.users` row shaped exactly like a genuine anonymous sign-in (verified against a real one), not a stand-in table, so it satisfies every FK/RLS policy a real student would. Spreads accuracy randomly (25-95%) across readers so Above/Near/Below-average all show up on the comparison screen. Ends by calling `refresh_rollups()`. |
 
+## `engine/review-planner/` - the algorithm (not under `supabase/`, but deployed into it)
+
+Pure TypeScript, no I/O. This is the canonical source - `npm run sync-engine` compiles it and
+copies the output into `functions/_shared/engine/` below, which is what `plan-gateway` actually
+runs in production. `api/`'s standalone Fastify server also imports it directly, but that server
+isn't deployed or called by the real app (the Android client only ever invokes `plan-gateway`) -
+it exists for local dev/testing only, exercised by `tests/contract.test.ts`.
+
+| File | Purpose |
+|---|---|
+| `types.ts` | All shared shapes: `TopicStat` (raw per-topic input - answered count, correct count, days since last practice, cohort mastery, reference seconds), `Params`/`DEFAULT_PARAMS` (the DP's tunable knobs), `ScoredTopic` (post-scoring, see `priorities.ts`), `Certificate`/`PlanEntry`/`Metrics` (the solver's full output), `InputError`. |
+| `priorities.ts` | `validateInput()` (range/shape checks) and `computePriorities()` - the real math. Mastery `mu` is a shrinkage estimate, not a raw percent: `(c + priorStrength * pi) / (a + priorStrength)`, where `pi` is the topic's cohort mastery (or `defaultPrior` if not yet released) - so a topic with only 1-2 answered items doesn't swing to 0% or 100%. Staleness `r` is exponential decay off `daysSincePractice` with a `halfLifeDays` half-life. Time cost `k` and knapsack value `v` (`N * (w + recencyWeight * r)`) are derived here too. |
+| `knapsack.ts` | `solveDp()` - the production solver. Cardinality-constrained 0/1 knapsack DP (PDF §2.2-2.3): maximize total value within a time budget while requiring at least `minStrong` "strong" (reliable + above-threshold-mastery) topics. Rolling 2D rows plus a bit-table for reconstruction, not a full 3D table, to stay inside `plan-gateway`'s 1500ms timeout. |
+| `reference.ts` | `solveDpReference()` - a scalar oracle: the same DP, but a full 3D table with plain nested loops, no rolling rows or typed arrays. Test-only, used to verify `solveDp()`'s optimality - never deployed. |
+| `baselines.ts` | `bruteForce()` (exhaustive 2^n subset search, test oracle only, capped around n~20) and `greedyRatio()` (literature-baseline greedy by value/cost density, ignores the `minStrong` constraint entirely). Both exist purely so tests can prove the DP beats naive approaches - neither is deployed. |
+| `service.ts` | `planReview()` - the public entrypoint. Validates input, scores priorities, handles the `EMPTY_INPUT`/`BUDGET_TOO_SMALL` edge cases, runs `solveDp()`, reconstructs the ranked `PlanEntry[]` (sorted by value/cost density), and attaches warnings (relaxed `minStrong`, missing cohort prior) plus solve metrics. |
+| `index.ts` | Barrel file - re-exports everything for `api/` and (after compilation) `functions/_shared/engine/`. |
+
 ## `functions/plan-gateway/` - Edge Functions
 
 | File | Purpose |
